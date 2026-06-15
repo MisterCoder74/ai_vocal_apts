@@ -1,0 +1,14 @@
+[
+    {
+        "timestamp": "2026-06-15T15:22:45+02:00",
+        "transcription": "appuntamento a Cerveteri in via Piave 66 con il Signore Alessandro Demontis Il 16 giugno 2026 alle ore 11:50",
+        "extracted_data": {
+            "cliente": "Alessandro Demontis",
+            "telefono": null,
+            "città": "Cerveteri",
+            "indirizzo": "via Piave 66",
+            "data": "16-06-2026",
+            "orario": "11:50"
+        }
+    }
+]

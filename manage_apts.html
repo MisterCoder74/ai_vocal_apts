@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Appointment Manager - Manage Appointments</title>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css' />
+<style>
+/* Riporto lo stile dal layout precedente (semplificato e adattato) */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+height: 100%;
+font-family: "Segoe UI", Roboto, sans-serif;
+background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+color: #fff;
+padding: 20px;
+}
+h1 {
+font-weight: 800;
+font-size: 1.6rem;
+background: linear-gradient(90deg, #10b981, #34d399);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 20px;
+text-align: center;
+}
+table {
+border-collapse: collapse;
+width: 100%;
+background: rgba(255,255,255,0.03);
+border-radius: 12px;
+overflow: hidden;
+}
+thead tr {
+background: rgba(16, 185, 129, 0.35);
+}
+thead th {
+padding: 12px 10px;
+font-weight: 700;
+font-size: 0.9rem;
+text-align: left;
+border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+tbody tr {
+border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+tbody tr:last-child {
+border-bottom: none;
+}
+tbody td {
+padding: 10px 8px;
+font-size: 0.88rem;
+vertical-align: middle;
+}
+tbody td[contenteditable="true"] {
+background: rgba(16,185,129,0.08);
+cursor: text;
+border-radius: 6px;
+transition: background 0.3s;
+}
+tbody td[contenteditable="true"]:focus {
+background: rgba(16,185,129,0.23);
+outline: none;
+}
+button.actionBtn {
+background: transparent;
+border: none;
+color: #10b981;
+cursor: pointer;
+font-size: 1.1rem;
+transition: color 0.2s;
+}
+button.actionBtn:hover {
+color: #34d399;
+}
+#messageBox {
+margin-top: 15px;
+font-size: 0.9rem;
+color: #00f2a0;
+min-height: 22px;
+text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>Gestione Appuntamenti</h1>
+<table id="appointmentsTable" aria-label="Tabella appuntamenti">
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Telefono</th>
+<th>Città</th>
+<th>Indirizzo</th>
+<th>Data</th>
+<th>Orario</th>
+<th>Azioni</th>
+</tr>
+</thead>
+<tbody>
+<!-- Appuntamenti caricati da JS -->
+</tbody>
+</table>
+<div id="messageBox" role="alert" aria-live="polite"></div>
+
+<script>
+const tableBody = document.querySelector('#appointmentsTable tbody');
+const messageBox = document.getElementById('messageBox');
+
+// Formato campi e ordine
+const fields = ["cliente", "telefono", "città", "indirizzo", "data", "orario"];
+
+// Carica appuntamenti dal server
+async function loadAppointments() {
+try {
+const resp = await fetch('list_appointments.php');
+if (!resp.ok) throw new Error(`Errore caricamento: ${resp.statusText}`);
+const appointments = await resp.json();
+renderAppointments(appointments);
+} catch (e) {
+messageBox.textContent = `Errore: ${e.message}`;
+}
+}
+
+// Render tabella
+function renderAppointments(appointments) {
+tableBody.innerHTML = '';
+if (!Array.isArray(appointments) || appointments.length === 0) {
+tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#999;">Nessun appuntamento trovato.</td></tr>';
+return;
+}
+
+appointments.forEach((app, index) => {
+const tr = document.createElement('tr');
+tr.dataset.index = index;
+
+for (const field of fields) {
+const td = document.createElement('td');
+td.contentEditable = 'true';
+td.spellcheck = false;
+td.dataset.field = field;
+
+// Valore esistente o stringa vuota se null/undefined
+let val = (app.extracted_data && app.extracted_data[field]) ?? '';
+td.textContent = val ?? '';
+
+tr.appendChild(td);
+}
+
+// Colonna azioni: salva e cancella
+const actionsTd = document.createElement('td');
+
+const saveBtn = document.createElement('button');
+saveBtn.className = 'actionBtn';
+saveBtn.title = 'Salva modifiche';
+saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+saveBtn.addEventListener('click', () => saveAppointment(index));
+
+const deleteBtn = document.createElement('button');
+deleteBtn.className = 'actionBtn';
+deleteBtn.title = 'Elimina appuntamento';
+deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+deleteBtn.style.marginLeft = '10px';
+deleteBtn.addEventListener('click', () => deleteAppointment(index));
+
+actionsTd.appendChild(saveBtn);
+actionsTd.appendChild(deleteBtn);
+
+tr.appendChild(actionsTd);
+tableBody.appendChild(tr);
+});
+}
+
+// Recupera appuntamenti da tabella per inviare al server
+function readAppointmentFromRow(tr, originalRecord) {
+const updatedData = {};
+for (const field of fields) {
+const td = tr.querySelector(`td[data-field="${field}"]`);
+updatedData[field] = td.textContent.trim();
+if (updatedData[field] === '') updatedData[field] = null; // normalizzazione null
+}
+// Mantieni timestamp e transcription originale per sicurezza
+return {
+timestamp: originalRecord.timestamp,
+transcription: originalRecord.transcription,
+extracted_data: updatedData
+};
+}
+
+// Salva modifica
+async function saveAppointment(index) {
+const rows = tableBody.querySelectorAll('tr');
+const tr = rows[index];
+if (!tr) return;
+
+try {
+// Prima carichiamo il record originale per mantenere timestamp/transcription
+const respList = await fetch('list_appointments.php');
+if (!respList.ok) throw new Error(`Errore caricamento: ${respList.statusText}`);
+const appointmentsList = await respList.json();
+
+if (!appointmentsList[index]) throw new Error('Appuntamento non trovato');
+
+const updatedRecord = readAppointmentFromRow(tr, appointmentsList[index]);
+
+// Invia aggiornamento
+const resp = await fetch('edit_appointment.php', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({ index, updatedRecord })
+});
+
+if (!resp.ok) {
+const text = await resp.text();
+throw new Error(`Errore salvataggio: ${resp.status} ${text}`);
+}
+
+const result = await resp.json();
+messageBox.textContent = 'Appuntamento salvato con successo.';
+loadAppointments(); // ricarica tabella aggiornata
+} catch (e) {
+messageBox.textContent = `Errore: ${e.message}`;
+}
+}
+
+// Cancella appuntamento
+async function deleteAppointment(index) {
+if (!confirm('Sei sicuro di voler cancellare questo appuntamento?')) return;
+
+try {
+const resp = await fetch('delete_appointment.php', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({ index })
+});
+if (!resp.ok) {
+const text = await resp.text();
+throw new Error(`Errore cancellazione: ${resp.status} ${text}`);
+}
+const result = await resp.json();
+messageBox.textContent = 'Appuntamento cancellato con successo.';
+loadAppointments(); // aggiorna tabella
+} catch(e) {
+messageBox.textContent = `Errore: ${e.message}`;
+}
+}
+
+// All'avvio carica appuntamenti
+loadAppointments();
+</script>
+</body>
+</html>
