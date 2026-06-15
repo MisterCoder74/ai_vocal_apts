@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendario Appuntamenti — VivacityGPT</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+font-family: "Segoe UI", Roboto, sans-serif;
+background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+color: #fff;
+padding: 20px;
+}
+h1 {
+font-weight: 800;
+font-size: 1.7rem;
+margin-bottom: 12px;
+background: linear-gradient(90deg, #10b981, #34d399);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+#calendar {
+max-width: 720px;
+margin: 0 auto;
+}
+.calendar-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+button {
+background: rgba(16,185,129,0.15);
+border: 1px solid #10b981;
+color: #10b981;
+padding: 6px 10px;
+font-weight: 700;
+font-size: 1rem;
+border-radius: 10px;
+cursor: pointer;
+transition: background 0.3s;
+}
+button:hover {
+background: #10b981;
+color: black;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+text-align: center;
+user-select: none;
+}
+th {
+padding: 10px 0;
+font-weight: 700;
+color: #10b981;
+font-size: 0.95rem;
+}
+td {
+height: 80px;
+border: 1px solid rgba(16,185,129,0.15);
+vertical-align: top;
+padding: 6px;
+position: relative;
+font-size: 0.9rem;
+}
+td.other-month {
+color: #555;
+}
+td.today {
+background: rgba(16,185,129,0.3);
+font-weight: 700;
+border: 2px solid #10b981;
+}
+td.has-event {
+background: rgba(16, 185, 129, 0.5);
+cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px black;
+}
+td.has-event:hover .tooltip {
+display: block;
+}
+.date-number {
+font-weight: 700;
+margin-bottom: 4px;
+display: block;
+}
+/* Tooltip con dettagli appuntamento */
+.tooltip {
+display: none;
+position: absolute;
+top: 28px;
+left: 50%;
+transform: translateX(-50%);
+background: #10b981;
+color: black;
+padding: 8px 10px;
+border-radius: 10px;
+width: 200px;
+box-shadow: 0 0 8px rgba(0,0,0,0.3);
+font-size: 0.8rem;
+z-index: 10;
+white-space: normal;
+}
+</style>
+</head>
+<body>
+
+<h1>Calendario Appuntamenti</h1>
+<div id="calendar">
+<div class="calendar-header">
+<button id="prevMonthBtn" aria-label="Mese precedente">«</button>
+<div id="monthYearLabel" aria-live="polite" aria-atomic="true" style="font-weight:700; font-size:1.1rem; color:#10b981;"></div>
+<button id="nextMonthBtn" aria-label="Mese successivo">»</button>
+</div>
+<table>
+<thead>
+<tr>
+<th>Dom</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Gio</th><th>Ven</th><th>Sab</th>
+</tr>
+</thead>
+<tbody id="calendarBody"></tbody>
+</table>
+</div>
+
+<script>
+// Variabili di stato calendario
+let currentDate = new Date();
+currentDate.setDate(1); // porta al primo giorno mese corrente
+
+// Memorizza appuntamenti caricati
+let appointments = [];
+
+// Carica appuntamenti da backend
+async function loadAppointments() {
+try {
+const resp = await fetch('list_appointments.php');
+if (!resp.ok) throw new Error('Impossibile caricare appuntamenti');
+appointments = await resp.json();
+} catch(e) {
+alert('Errore caricamento appuntamenti: ' + e.message);
+appointments = [];
+}
+}
+
+// Normalizza data in ISO
+function normalizeDate(dateStr) {
+if (!dateStr) return null;
+if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+const parts = dateStr.split('-');
+return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+return null;
+}
+
+// Costruisce il mese da mostrare (01-mm-yyyy)
+function buildCalendar(date) {
+const year = date.getFullYear();
+const month = date.getMonth();
+
+// Prima data del mese
+const firstDayOfMonth = new Date(year, month, 1);
+// Giorno della settimana del primo giorno (0 = domenica)
+const startDay = firstDayOfMonth.getDay();
+
+// Numero giorni mese
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+// Numero giorni mese precedente
+const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+// Costruisci tutti i 42 giorni da mostrare (6 righe, 7 giorni)
+let html = '';
+
+// Calcolo giorno per ciclo
+let dayNum = 1;
+let nextMonthDay = 1;
+
+// Oggi per confronto
+const today = new Date();
+const todayStr = today.toISOString().slice(0,10);
+
+// Nome mese per label
+const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+document.getElementById('monthYearLabel').textContent = `${monthNames[month]} ${year}`;
+
+for (let row = 0; row < 6; row++) {
+html += '<tr>';
+for (let col = 0; col < 7; col++) {
+let day, classNames = '', dateISO;
+
+const cellNum = row * 7 + col;
+
+if (cellNum < startDay) {
+// giorni mese precedente
+day = daysInPrevMonth - (startDay - 1 - cellNum);
+classNames = 'other-month';
+// per semplicità non mostra eventi fuori mese ma puoi aggiungere se vuoi
+dateISO = null;
+} else if (dayNum <= daysInMonth) {
+day = dayNum++;
+dateISO = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+if (dateISO === todayStr) classNames = 'today';
+
+// Controlla se ci sono eventi in questo giorno
+const dayEvents = appointments.filter(a => {
+const d = normalizeDate(a.extracted_data?.data);
+return d === dateISO;
+});
+
+if (dayEvents.length > 0) {
+classNames += ' has-event';
+}
+} else {
+// giorni mese successivo
+day = nextMonthDay++;
+classNames = 'other-month';
+dateISO = null;
+}
+
+html += `<td class="${classNames}">
+<span class="date-number">${day}</span>`;
+
+if (classNames.includes('has-event')) {
+html += '<div class="tooltip">';
+appointments.filter(a => normalizeDate(a.extracted_data?.data) === dateISO)
+.forEach(ev => {
+const d = ev.extracted_data || {};
+html += `<div><strong>${d.cliente ?? 'Appuntamento'}</strong><br>
+${d.orario ?? ''} ${d.città ?? ''}<br>
+<small style="opacity:0.7;">${ev.transcription ?? ''}</small></div><hr style="border-color:#10b98155;">`;
+});
+html += '</div>';
+}
+
+html += '</td>';
+}
+html += '</tr>';
+}
+
+document.getElementById('calendarBody').innerHTML = html;
+}
+
+// Navigazione mesi
+document.getElementById('prevMonthBtn').onclick = function() {
+currentDate.setMonth(currentDate.getMonth() - 1);
+buildCalendar(currentDate);
+};
+
+document.getElementById('nextMonthBtn').onclick = function() {
+currentDate.setMonth(currentDate.getMonth() + 1);
+buildCalendar(currentDate);
+};
+
+// Inizializza
+async function init() {
+await loadAppointments();
+buildCalendar(currentDate);
+}
+
+init();
+</script>
+
+</body>
+</html>
