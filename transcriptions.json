@@ -7,8 +7,32 @@
             "telefono": null,
             "città": "Cerveteri",
             "indirizzo": "via Piave 66",
-            "data": "16-06-2026",
+            "data": "18-06-2026",
             "orario": "11:50"
+        }
+    },
+    {
+        "timestamp": "2026-06-15T16:01:26+02:00",
+        "transcription": "appuntamento a Cerveteri in via Piave 66 con il signor Alessandro Demontis il giorno 16 giugno 2026 alle ore 17:50",
+        "extracted_data": {
+            "cliente": "Alessandro Demontis",
+            "telefono": null,
+            "città": "Cerveteri",
+            "indirizzo": "via Piave 66",
+            "data": "16-06-2026",
+            "orario": "17:50"
+        }
+    },
+    {
+        "timestamp": "2026-06-15T16:52:58+02:00",
+        "transcription": "appuntamento a Cerveteri in via Agila 28 con signora Alessandro Demontis il giorno 22 giugno 2026 alle ore 12:50 numero di telefono 328 08 75 031",
+        "extracted_data": {
+            "cliente": "Alessandro Demontis",
+            "telefono": "3280875031",
+            "città": "Cerveteri",
+            "indirizzo": "via Agila 28",
+            "data": "22-06-2026",
+            "orario": "12:50"
         }
     }
 ]
