@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ImmobiVoice AI – Gestisci Clienti</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #F5F5F7;
+  color: #1A1A1A;
+  margin: 0; padding: 0;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1A1A1A;
+  padding: 16px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.30);
+  user-select: none;
+}
+.app-name {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #CC0000;
+  margin: 0;
+  cursor: default;
+}
+.dashboard-link {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.dashboard-link:hover, .dashboard-link:focus {
+  color: #FF9999;
+  border-color: #FF9999;
+  outline: none;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #CC0000;
+  text-align: center;
+  margin: 2rem auto 1rem;
+}
+table {
+  border-collapse: collapse;
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto 2rem;
+  background: #FFFFFF;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+}
+thead tr { background: #CC0000; }
+thead th {
+  padding: 12px 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #FFFFFF;
+  text-align: left;
+}
+tbody tr { border-bottom: 1px solid #F0F0F0; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:nth-child(even) { background: rgba(204,0,0,0.04); }
+tbody tr:hover { background: rgba(204,0,0,0.07); }
+tbody td {
+  padding: 10px 8px;
+  font-size: 0.88rem;
+  color: #1A1A1A;
+  vertical-align: middle;
+}
+tbody td[contenteditable="true"] {
+  background: rgba(204,0,0,0.05);
+  cursor: text;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+tbody td[contenteditable="true"]:focus {
+  background: rgba(204,0,0,0.14);
+  outline: none;
+}
+button.actionBtn {
+  background: transparent;
+  border: 1.5px solid #CC0000;
+  color: #CC0000;
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.18s, color 0.18s;
+  margin: 0 2px;
+}
+button.actionBtn:hover { background: #CC0000; color: #FFFFFF; }
+#messageBox {
+  text-align: center;
+  font-weight: 700;
+  color: #CC0000;
+  min-height: 24px;
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+}
+#refreshBtn {
+  display: block;
+  margin: 0 auto 1rem;
+  background: transparent;
+  border: 1.5px solid #CC0000;
+  color: #CC0000;
+  padding: 7px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+}
+#refreshBtn:hover { background: #CC0000; color: #FFFFFF; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1 class="app-name" tabindex="0">ImmobiVoice AI</h1>
+  <h3 class="dashboard-link" tabindex="0" role="link"
+      onclick="location.href='dashboard.html'"
+      onkeypress="if(event.key==='Enter') location.href='dashboard.html'">Dashboard</h3>
+</header>
+<h1><i class="fas fa-users" style="margin-right:8px;"></i>Clienti</h1>
+<button id="refreshBtn"><i class="fas fa-sync-alt"></i> Aggiorna</button>
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Telefono</th>
+      <th>Email</th>
+      <th>Città</th>
+      <th>Note</th>
+      <th>Azioni</th>
+    </tr>
+  </thead>
+  <tbody id="clientsBody">
+    <tr><td colspan="6" style="text-align:center; color:#999;">Caricamento…</td></tr>
+  </tbody>
+</table>
+<div id="messageBox"></div>
+
+<script>
+const tableBody  = document.getElementById('clientsBody');
+const messageBox = document.getElementById('messageBox');
+const fields     = ['nome', 'telefono', 'email', 'città', 'note'];
+
+async function loadClients() {
+  messageBox.textContent = '';
+  try {
+    const resp = await fetch('clients_api.php?action=list');
+    if (!resp.ok) throw new Error('Errore caricamento: ' + resp.statusText);
+    const clients = await resp.json();
+    renderClients(clients);
+  } catch (e) {
+    messageBox.textContent = 'Errore: ' + e.message;
+  }
+}
+
+function renderClients(clients) {
+  tableBody.innerHTML = '';
+  if (!Array.isArray(clients) || clients.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Nessun cliente trovato.</td></tr>';
+    return;
+  }
+  clients.forEach((client, index) => {
+    const tr = document.createElement('tr');
+    tr.dataset.index = index;
+    fields.forEach(field => {
+      const td = document.createElement('td');
+      td.contentEditable = 'true';
+      td.spellcheck = false;
+      td.dataset.field = field;
+      td.textContent = (client.extracted_data && client.extracted_data[field]) ?? '';
+      tr.appendChild(td);
+    });
+    const actionsTd = document.createElement('td');
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'actionBtn';
+    saveBtn.title = 'Salva modifiche';
+    saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+    saveBtn.addEventListener('click', () => saveClient(index));
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'actionBtn';
+    deleteBtn.title = 'Elimina cliente';
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteBtn.addEventListener('click', () => deleteClient(index));
+    actionsTd.appendChild(saveBtn);
+    actionsTd.appendChild(deleteBtn);
+    tr.appendChild(actionsTd);
+    tableBody.appendChild(tr);
+  });
+}
+
+function readRowData(tr, original) {
+  const updated = {};
+  fields.forEach(field => {
+    const td = tr.querySelector('td[data-field="' + field + '"]');
+    updated[field] = td ? (td.textContent.trim() || null) : null;
+  });
+  return { timestamp: original.timestamp, transcription: original.transcription, extracted_data: updated };
+}
+
+async function saveClient(index) {
+  const rows = tableBody.querySelectorAll('tr');
+  const tr   = rows[index];
+  if (!tr) return;
+  try {
+    const listResp = await fetch('clients_api.php?action=list');
+    if (!listResp.ok) throw new Error('Errore caricamento: ' + listResp.statusText);
+    const clients = await listResp.json();
+    if (!clients[index]) throw new Error('Cliente non trovato');
+    const updatedRecord = readRowData(tr, clients[index]);
+    const resp = await fetch('clients_api.php?action=edit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ index, updatedRecord })
+    });
+    if (!resp.ok) { const t = await resp.text(); throw new Error(resp.status + ' ' + t); }
+    messageBox.textContent = 'Cliente salvato con successo.';
+    loadClients();
+  } catch (e) { messageBox.textContent = 'Errore: ' + e.message; }
+}
+
+async function deleteClient(index) {
+  if (!confirm('Eliminare questo cliente?')) return;
+  try {
+    const resp = await fetch('clients_api.php?action=delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ index })
+    });
+    if (!resp.ok) { const t = await resp.text(); throw new Error(resp.status + ' ' + t); }
+    messageBox.textContent = 'Cliente eliminato.';
+    loadClients();
+  } catch (e) { messageBox.textContent = 'Errore: ' + e.message; }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadClients);
+loadClients();
+</script>
+</body>
+</html>

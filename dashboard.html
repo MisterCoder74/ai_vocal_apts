@@ -268,8 +268,8 @@ p.subtitle { color: #666666 !important; }
 </head>
 <body>
 
-<h1>Dashboard Appuntamenti</h1>
-<p class="subtitle">Crea, gestisci e visualizza i tuoi appuntamenti in modo semplice e veloce.</p>
+<h1>ImmobiVoice AI</h1>
+<p class="subtitle">Gestisci appuntamenti e clienti con la tua voce.</p>
 
 <div class="cards" role="navigation" aria-label="Sezioni principali">
 <div class="card" tabindex="0" role="link" aria-label="Crea nuovo appuntamento" onclick="location.href='create_apts.html'" onkeypress="if(event.key==='Enter')this.click()">
@@ -279,6 +279,45 @@ Nuovo Appuntamento
 <div class="card" tabindex="0" role="link" aria-label="Gestisci appuntamenti esistenti" onclick="location.href='manage_apts.html'" onkeypress="if(event.key==='Enter')this.click()">
 <i class="fas fa-list"></i>
 Gestisci Appuntamenti
+</div>
+
+<div class="card" tabindex="0" role="link" aria-label="Aggiungi nuovo cliente"
+     onclick="location.href='create_client.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-user-plus"></i>
+  Nuovo Cliente
+</div>
+<div class="card" tabindex="0" role="link" aria-label="Gestisci clienti"
+     onclick="location.href='manage_clients.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-users"></i>
+  Gestisci Clienti
+</div>
+
+<div class="card" tabindex="0" role="link" aria-label="Aggiungi nuovo cliente"
+     onclick="location.href='create_client.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-user-plus"></i>
+  Nuovo Cliente
+</div>
+<div class="card" tabindex="0" role="link" aria-label="Gestisci clienti"
+     onclick="location.href='manage_clients.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-users"></i>
+  Gestisci Clienti
+</div>
+
+<div class="card" tabindex="0" role="link" aria-label="Aggiungi nuovo cliente"
+     onclick="location.href='create_client.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-user-plus"></i>
+  Nuovo Cliente
+</div>
+<div class="card" tabindex="0" role="link" aria-label="Gestisci clienti"
+     onclick="location.href='manage_clients.html'"
+     onkeypress="if(event.key==='Enter')this.click()">
+  <i class="fas fa-users"></i>
+  Gestisci Clienti
 </div>
 <div class="card" tabindex="0" role="link" aria-label="Visualizza calendario appuntamenti" onclick="location.href='calendar.html'" onkeypress="if(event.key==='Enter')this.click()">
 <i class="fas fa-calendar-alt"></i>
@@ -385,5 +424,119 @@ refreshBtn.addEventListener('click', loadNextAppointments);
 loadNextAppointments();
 </script>
 
+
+<div class="mini-table-container" style="margin-top:24px;" aria-label="Ultimi 5 clienti">
+  <h2 style="font-weight:700; margin-bottom:12px; color:#CC0000; font-size:1.2rem;">Clienti recenti</h2>
+  <table aria-live="polite">
+    <thead>
+      <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Città</th></tr>
+    </thead>
+    <tbody id="recentClientsBody">
+      <tr><td colspan="4" style="text-align:center; opacity:0.5;">Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <button id="refreshClientsBtn" aria-label="Aggiorna clienti" style="background:transparent; border:1.5px solid #CC0000; color:#CC0000; padding:6px 12px; margin-top:12px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.9rem; float:right;">Aggiorna</button>
+  <div id="clientsMsgBox" style="margin-top:8px; text-align:center; font-weight:700; color:#CC0000; font-size:0.9rem; min-height:20px;"></div>
+</div>
+
+<script>
+const recentClientsBody = document.getElementById('recentClientsBody');
+async function loadRecentClients() {
+  try {
+    const resp = await fetch('clients_api.php?action=list');
+    if (!resp.ok) throw new Error(resp.statusText);
+    const clients = await resp.json();
+    if (!Array.isArray(clients) || clients.length === 0) {
+      recentClientsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Nessun cliente.</td></tr>';
+      return;
+    }
+    const last5 = clients.slice(-5).reverse();
+    recentClientsBody.innerHTML = last5.map(c => {
+      const d = c.extracted_data || {};
+      return '<tr><td>' + (d.nome||'') + '</td><td>' + (d.telefono||'') + '</td><td>' + (d.email||'') + '</td><td>' + (d['città']||'') + '</td></tr>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('clientsMsgBox').textContent = 'Errore: ' + e.message;
+  }
+}
+document.getElementById('refreshClientsBtn').addEventListener('click', loadRecentClients);
+loadRecentClients();
+</script>
+
+<div class="mini-table-container" style="margin-top:24px;" aria-label="Ultimi 5 clienti">
+  <h2 style="font-weight:700; margin-bottom:12px; color:#CC0000; font-size:1.2rem;">Clienti recenti</h2>
+  <table aria-live="polite">
+    <thead>
+      <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Città</th></tr>
+    </thead>
+    <tbody id="recentClientsBody">
+      <tr><td colspan="4" style="text-align:center; opacity:0.5;">Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <button id="refreshClientsBtn" aria-label="Aggiorna clienti" style="background:transparent; border:1.5px solid #CC0000; color:#CC0000; padding:6px 12px; margin-top:12px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.9rem; float:right;">Aggiorna</button>
+  <div id="clientsMsgBox" style="margin-top:8px; text-align:center; font-weight:700; color:#CC0000; font-size:0.9rem; min-height:20px;"></div>
+</div>
+
+<script>
+const recentClientsBody = document.getElementById('recentClientsBody');
+async function loadRecentClients() {
+  try {
+    const resp = await fetch('clients_api.php?action=list');
+    if (!resp.ok) throw new Error(resp.statusText);
+    const clients = await resp.json();
+    if (!Array.isArray(clients) || clients.length === 0) {
+      recentClientsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Nessun cliente.</td></tr>';
+      return;
+    }
+    const last5 = clients.slice(-5).reverse();
+    recentClientsBody.innerHTML = last5.map(c => {
+      const d = c.extracted_data || {};
+      return '<tr><td>' + (d.nome||'') + '</td><td>' + (d.telefono||'') + '</td><td>' + (d.email||'') + '</td><td>' + (d['città']||'') + '</td></tr>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('clientsMsgBox').textContent = 'Errore: ' + e.message;
+  }
+}
+document.getElementById('refreshClientsBtn').addEventListener('click', loadRecentClients);
+loadRecentClients();
+</script>
+
+<div class="mini-table-container" style="margin-top:24px;" aria-label="Ultimi 5 clienti">
+  <h2 style="font-weight:700; margin-bottom:12px; color:#CC0000; font-size:1.2rem;">Clienti recenti</h2>
+  <table aria-live="polite">
+    <thead>
+      <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Città</th></tr>
+    </thead>
+    <tbody id="recentClientsBody">
+      <tr><td colspan="4" style="text-align:center; opacity:0.5;">Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <button id="refreshClientsBtn" aria-label="Aggiorna clienti" style="background:transparent; border:1.5px solid #CC0000; color:#CC0000; padding:6px 12px; margin-top:12px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.9rem; float:right;">Aggiorna</button>
+  <div id="clientsMsgBox" style="margin-top:8px; text-align:center; font-weight:700; color:#CC0000; font-size:0.9rem; min-height:20px;"></div>
+</div>
+
+<script>
+const recentClientsBody = document.getElementById('recentClientsBody');
+async function loadRecentClients() {
+  try {
+    const resp = await fetch('clients_api.php?action=list');
+    if (!resp.ok) throw new Error(resp.statusText);
+    const clients = await resp.json();
+    if (!Array.isArray(clients) || clients.length === 0) {
+      recentClientsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Nessun cliente.</td></tr>';
+      return;
+    }
+    const last5 = clients.slice(-5).reverse();
+    recentClientsBody.innerHTML = last5.map(c => {
+      const d = c.extracted_data || {};
+      return '<tr><td>' + (d.nome||'') + '</td><td>' + (d.telefono||'') + '</td><td>' + (d.email||'') + '</td><td>' + (d['città']||'') + '</td></tr>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('clientsMsgBox').textContent = 'Errore: ' + e.message;
+  }
+}
+document.getElementById('refreshClientsBtn').addEventListener('click', loadRecentClients);
+loadRecentClients();
+</script>
 </body>
 </html>

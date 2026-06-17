@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ImmobiVoice AI – Nuovo Cliente</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #F5F5F7;
+  color: #1A1A1A;
+  margin: 0; padding: 0;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1A1A1A;
+  padding: 16px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.30);
+  user-select: none;
+}
+.app-name {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #CC0000;
+  margin: 0;
+  cursor: default;
+}
+.dashboard-link {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.dashboard-link:hover, .dashboard-link:focus {
+  color: #FF9999;
+  border-color: #FF9999;
+  outline: none;
+}
+
+.container {
+  background: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  width: 100%;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #CC0000;
+  text-align: center;
+}
+.hint {
+  font-size: 0.88rem;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+}
+.controls-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+select#languageSelector {
+  background: #F5F5F7;
+  border: 1px solid #DDDDDD;
+  border-radius: 10px;
+  color: #1A1A1A;
+  padding: 8px 28px 8px 12px;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23CC0000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 140px;
+}
+button#micBtn {
+  background: rgba(204,0,0,0.08);
+  border: 1px solid rgba(204,0,0,0.35);
+  color: #CC0000;
+  border-radius: 9px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+}
+button#micBtn:hover { background: rgba(204,0,0,0.18); }
+button#micBtn.recording {
+  background: rgba(204,0,0,0.35);
+  box-shadow: 0 0 18px rgba(204,0,0,0.50);
+}
+#transcript {
+  background: #F9F9F9;
+  border: 1px solid rgba(204,0,0,0.20);
+  border-radius: 12px;
+  padding: 16px 18px;
+  min-height: 110px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1A1A1A;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+label { font-weight: 700; color: #CC0000; font-size: 0.92rem; }
+input[type="password"] {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #DDDDDD;
+  background: #F5F5F7;
+  color: #1A1A1A;
+  font-family: monospace;
+  font-size: 0.92rem;
+  outline: none;
+}
+input[type="password"]:focus { border-color: #CC0000; }
+button#saveApiKeyBtn {
+  background: #CC0000;
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+button#saveApiKeyBtn:hover { background: #AA0000; }
+#feedbackMessage {
+  font-size: 1rem;
+  font-weight: 700;
+  min-height: 22px;
+  color: #CC0000;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1 class="app-name" tabindex="0">ImmobiVoice AI</h1>
+  <h3 class="dashboard-link" tabindex="0" role="link"
+      onclick="location.href='dashboard.html'"
+      onkeypress="if(event.key==='Enter') location.href='dashboard.html'">Dashboard</h3>
+</header>
+<div class="container">
+  <h1><i class="fas fa-user-plus" style="margin-right:8px;"></i>Nuovo Cliente</h1>
+  <p class="hint">Pronuncia: <em>nome, telefono, email, città e una nota</em> del cliente.</p>
+
+  <label for="apiKeyInput">OpenAI API Key</label>
+  <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" />
+  <button id="saveApiKeyBtn">Salva API Key</button>
+
+  <div class="controls-row">
+    <select id="languageSelector" title="Lingua riconoscimento">
+      <option value="it-IT" selected>🇮🇹 Italiano</option>
+      <option value="en-US">🇬🇧 English (US)</option>
+      <option value="fr-FR">🇫🇷 Français</option>
+      <option value="es-ES">🇪🇸 Español</option>
+      <option value="de-DE">🇩🇪 Deutsch</option>
+    </select>
+    <button id="micBtn" type="button" aria-label="Attiva microfono">
+      <i class="fas fa-microphone"></i>
+    </button>
+  </div>
+
+  <div id="transcript" aria-live="polite" role="region">
+    Premi il microfono e inizia a parlare. Ripremi per fermare.
+  </div>
+  <div id="feedbackMessage" role="alert" aria-live="polite"></div>
+</div>
+
+<script>
+const apiKeyInput  = document.getElementById('apiKeyInput');
+const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+const saved = localStorage.getItem('openaikey') || '';
+apiKeyInput.value = saved;
+saveApiKeyBtn.addEventListener('click', () => {
+  const k = apiKeyInput.value.trim();
+  if (!k.startsWith('sk-')) { alert('API Key non valida (deve iniziare con "sk-")'); return; }
+  localStorage.setItem('openaikey', k);
+  alert('API Key salvata.');
+});
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) {
+  document.getElementById('transcript').textContent = 'Browser non supportato.';
+  document.getElementById('micBtn').disabled = true;
+} else {
+  const recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = document.getElementById('languageSelector').value;
+
+  const micBtn = document.getElementById('micBtn');
+  const micIcon = micBtn.querySelector('i');
+  const transcriptDiv = document.getElementById('transcript');
+  let recognizing = false;
+  let finalTranscript = '';
+
+  document.getElementById('languageSelector').addEventListener('change', e => {
+    recognition.lang = e.target.value;
+    if (recognizing) { recognition.stop(); setTimeout(() => recognition.start(), 300); }
+  });
+
+  micBtn.addEventListener('click', () => {
+    if (recognizing) { recognition.stop(); }
+    else { finalTranscript = ''; transcriptDiv.textContent = ''; recognition.start(); }
+  });
+
+  recognition.onstart = () => {
+    recognizing = true;
+    micBtn.classList.add('recording');
+    micIcon.className = 'fas fa-microphone-slash';
+    transcriptDiv.textContent = 'Sto ascoltando…';
+  };
+  recognition.onend = () => {
+    recognizing = false;
+    micBtn.classList.remove('recording');
+    micIcon.className = 'fas fa-microphone';
+    if (!finalTranscript) transcriptDiv.textContent = 'Premi il microfono e inizia a parlare.';
+  };
+  recognition.onerror = e => {
+    if (e.error === 'not-allowed') transcriptDiv.textContent = 'Permesso microfono negato.';
+    recognition.stop();
+  };
+  recognition.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const chunk = e.results[i][0].transcript;
+      if (e.results[i].isFinal) { finalTranscript += chunk; }
+      else { interim += chunk; }
+    }
+    transcriptDiv.textContent = finalTranscript + (interim ? '\n' + interim : '');
+    if (e.results[e.results.length - 1].isFinal) {
+      salvaCliente(finalTranscript);
+    }
+  };
+}
+
+async function salvaCliente(transcription) {
+  const apiKey = localStorage.getItem('openaikey');
+  if (!apiKey) { alert('Inserisci e salva la API Key prima.'); return; }
+  const fb = document.getElementById('feedbackMessage');
+  fb.textContent = 'Elaborazione in corso…';
+  try {
+    const resp = await fetch('extract_client.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transcription, openai_api_key: apiKey })
+    });
+    if (!resp.ok) { const t = await resp.text(); throw new Error(resp.status + ' ' + t); }
+    const data = await resp.json();
+    fb.textContent = 'Cliente salvato con successo.';
+  } catch (err) {
+    fb.textContent = 'Errore: ' + err.message;
+  }
+}
+</script>
+</body>
+</html>
