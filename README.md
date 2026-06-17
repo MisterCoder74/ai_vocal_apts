@@ -1,8 +1,20 @@
 # ImmobiVoice AI — Vocal Real Estate Manager
 
-> **Fase attuale:** Fase 1 completata ✅
+> **Fase attuale:** Fase 2 completata ✅
 
 Sistema di gestione per agenzie immobiliari a controllo vocale, basato su Web Speech API + OpenAI GPT-4o-mini.
+
+---
+
+## Design System
+
+| Token | Valore |
+|---|---|
+| Colore primario | `#CC0000` (rosso) |
+| Colore scuro | `#1A1A1A` (quasi nero) |
+| Background | `#F5F5F7` (bianco neutro) |
+| Accent hover | `#FFF5F5` |
+| Font | Segoe UI, Roboto |
 
 ---
 
@@ -10,7 +22,7 @@ Sistema di gestione per agenzie immobiliari a controllo vocale, basato su Web Sp
 
 | File | Ruolo |
 |---|---|
-| `appointment_api.php` | ✅ API unificata CRUD appuntamenti (`?action=list\|edit\|delete`) |
+| `appointment_api.php` | API unificata CRUD appuntamenti (`?action=list\|edit\|delete`) |
 | `extract_appointment.php` | Estrazione AI da trascrizione vocale (crea appuntamento) |
 | `create_apts.html` | Creazione appuntamento via voce |
 | `manage_apts.html` | Lista, modifica, cancellazione appuntamenti |
@@ -23,9 +35,9 @@ Sistema di gestione per agenzie immobiliari a controllo vocale, basato su Web Sp
 ## Roadmap
 
 - [x] **Fase 1** — API unificata appuntamenti (`appointment_api.php`)
-- [ ] **Fase 2** — Modulo Clienti (voce + CRUD)
-- [ ] **Fase 3** — Modulo Proprietà in vendita (voce + CRUD)
-- [ ] **Fase 4** — Redesign UI (bianco/rosso/nero) + Rebranding ImmobiVoice AI
+- [x] **Fase 2** — Rebranding ImmobiVoice AI (tema bianco/rosso/nero su tutte le pagine)
+- [ ] **Fase 3** — Modulo Clienti (voce + CRUD)
+- [ ] **Fase 4** — Modulo Proprietà in vendita (voce + CRUD)
 
 ---
 
