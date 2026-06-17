@@ -197,7 +197,7 @@ async function loadNextAppointments() {
 messageBox.textContent = '';
 nextAppBody.innerHTML = '<tr><td colspan="5" style="text-align:center; opacity:0.5;">Caricamento...</td></tr>';
 try {
-const resp = await fetch('list_appointments.php');
+const resp = await fetch('appointment_api.php?action=list');
 if (!resp.ok) throw new Error(`Errore caricamento dati: ${resp.statusText}`);
 const appointments = await resp.json();
 

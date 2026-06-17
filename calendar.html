@@ -179,7 +179,7 @@ let appointments = [];
 // Carica appuntamenti da backend
 async function loadAppointments() {
 try {
-const resp = await fetch('list_appointments.php');
+const resp = await fetch('appointment_api.php?action=list');
 if (!resp.ok) throw new Error('Impossibile caricare appuntamenti');
 appointments = await resp.json();
 } catch(e) {
