@@ -159,7 +159,24 @@ button#saveApiKeyBtn:hover { background: #AA0000; }
   <div id="transcript" aria-live="polite" role="region">Premi il microfono e inizia a parlare.</div>
   <div id="feedbackMessage" role="alert" aria-live="polite"></div>
 </div>
-<script src="voice_utils.js"></script>
+<script>
+/* voice_utils.js — inlined */
+const VoiceUtils = (() => {
+  const AT_PATTERNS = [
+    /\bchiocciola\b/gi,
+    /\barroba\b/gi,
+    /\barobase\b/gi,
+    /\bklammeraffe\b/gi,
+    /\bat\s+sign\b/gi,
+  ];
+  function normalizeAt(text) {
+    let out = text;
+    for (const p of AT_PATTERNS) out = out.replace(p, '@');
+    return out.replace(/\s*@\s*/g, '@');
+  }
+  return { normalizeAt };
+})();
+</script>
 <script>
 
 const apiKeyInput   = document.getElementById('apiKeyInput');
