@@ -203,6 +203,19 @@ tbody tr:hover { background: rgba(204,0,0,0.07); }
     <i class="fas fa-calendar-alt"></i>
     Vista Calendario
   </div>
+
+  <div class="card" tabindex="0" role="link" aria-label="Aggiungi nuova proprietà"
+       onclick="location.href='create_property.html'"
+       onkeypress="if(event.key==='Enter')this.click()">
+    <i class="fas fa-home"></i>
+    Nuova Proprietà
+  </div>
+  <div class="card" tabindex="0" role="link" aria-label="Gestisci proprietà"
+       onclick="location.href='manage_properties.html'"
+       onkeypress="if(event.key==='Enter')this.click()">
+    <i class="fas fa-building"></i>
+    Gestisci Proprietà
+  </div>
 </div>
 
 <!-- Prossimi appuntamenti -->
@@ -314,6 +327,48 @@ async function loadRecentClients() {
 
 document.getElementById('refreshClientsBtn').addEventListener('click', loadRecentClients);
 loadRecentClients();
+</script>
+
+<!-- Proprietà recenti -->
+<div class="mini-table-container" aria-label="Ultime 5 proprietà">
+  <h2>Proprietà recenti</h2>
+  <table>
+    <thead>
+      <tr><th>Indirizzo</th><th>Città</th><th>Prezzo (€)</th><th>Tipo</th><th>Stato</th></tr>
+    </thead>
+    <tbody id="recentPropertiesBody">
+      <tr><td colspan="5" style="text-align:center; opacity:0.5;">Caricamento…</td></tr>
+    </tbody>
+  </table>
+  <button class="refresh-btn" id="refreshPropertiesBtn" aria-label="Aggiorna proprietà">Aggiorna</button>
+  <div class="msg-box" id="propMsgBox"></div>
+</div>
+
+<script>
+const recentPropBody = document.getElementById('recentPropertiesBody');
+async function loadRecentProperties() {
+  document.getElementById('propMsgBox').textContent = '';
+  recentPropBody.innerHTML = '<tr><td colspan="5" style="text-align:center;opacity:.5">Caricamento…</td></tr>';
+  try {
+    const resp = await fetch('properties_api.php?action=list');
+    if (!resp.ok) throw new Error(resp.statusText);
+    const items = await resp.json();
+    if (!Array.isArray(items) || !items.length) {
+      recentPropBody.innerHTML = '<tr><td colspan="5" style="text-align:center;opacity:.5">Nessuna proprietà.</td></tr>';
+      return;
+    }
+    const last5 = items.slice(-5).reverse();
+    recentPropBody.innerHTML = last5.map(p => {
+      const d = p.extracted_data || {};
+      const prezzo = d.prezzo ? Number(d.prezzo).toLocaleString('it-IT') + ' €' : '';
+      return `<tr><td>${d.indirizzo||''}</td><td>${d['città']||''}</td><td>${prezzo}</td><td>${d.tipo||''}</td><td>${d.stato||''}</td></tr>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('propMsgBox').textContent = 'Errore: ' + e.message;
+  }
+}
+document.getElementById('refreshPropertiesBtn').addEventListener('click', loadRecentProperties);
+loadRecentProperties();
 </script>
 </body>
 </html>

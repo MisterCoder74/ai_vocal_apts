@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ImmobiVoice AI – Gestisci Proprietà</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  min-height: 100%;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #F5F5F7;
+  color: #1A1A1A;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1A1A1A;
+  padding: 16px 28px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.30);
+  user-select: none;
+}
+.app-name { font-weight: 900; font-size: 1.5rem; color: #CC0000; cursor: default; }
+.dashboard-link {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.dashboard-link:hover, .dashboard-link:focus { color: #FF9999; border-color: #FF9999; outline: none; }
+h1 { font-size: 1.6rem; font-weight: 800; color: #CC0000; text-align: center; margin: 2rem auto 1rem; }
+.table-wrap { width: 95%; max-width: 1200px; margin: 0 auto 2rem; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; background: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.10); }
+thead tr { background: #CC0000; }
+thead th { padding: 12px 10px; font-weight: 700; font-size: .88rem; color: #FFF; text-align: left; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid #F0F0F0; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:nth-child(even) { background: rgba(204,0,0,.04); }
+tbody tr:hover { background: rgba(204,0,0,.07); }
+tbody td { padding: 9px 8px; font-size: .86rem; color: #1A1A1A; vertical-align: middle; }
+tbody td[contenteditable="true"] { background: rgba(204,0,0,.05); cursor: text; border-radius: 4px; }
+tbody td[contenteditable="true"]:focus { background: rgba(204,0,0,.13); outline: none; }
+select.inlineSelect { background: #F5F5F7; border: 1px solid #DDD; border-radius: 6px; padding: 4px 6px; font-size: .84rem; color: #1A1A1A; cursor: pointer; width: 100%; }
+button.actionBtn { background: transparent; border: 1.5px solid #CC0000; color: #CC0000; border-radius: 6px; padding: 5px 9px; cursor: pointer; font-size: .95rem; transition: background .18s, color .18s; margin: 0 2px; }
+button.actionBtn:hover { background: #CC0000; color: #FFF; }
+#messageBox { text-align: center; font-weight: 700; color: #CC0000; min-height: 24px; margin: 0 0 1rem; font-size: .95rem; }
+.topActions { display: flex; justify-content: flex-end; width: 95%; max-width: 1200px; margin: 0 auto .8rem; }
+#refreshBtn { background: transparent; border: 1.5px solid #CC0000; color: #CC0000; padding: 7px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; transition: background .2s, color .2s; }
+#refreshBtn:hover { background: #CC0000; color: #FFF; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1 class="app-name" tabindex="0">ImmobiVoice AI</h1>
+  <span class="dashboard-link" tabindex="0" role="link"
+        onclick="location.href='dashboard.html'"
+        onkeypress="if(event.key==='Enter')location.href='dashboard.html'">Dashboard</span>
+</header>
+<h1><i class="fas fa-home" style="margin-right:8px"></i>Proprietà in Vendita</h1>
+<div class="topActions">
+  <button id="refreshBtn"><i class="fas fa-sync-alt"></i> Aggiorna</button>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Indirizzo</th><th>Città</th><th>Prezzo (€)</th>
+        <th>Tipo</th><th>Stato</th><th>Sup. (mq)</th>
+        <th>Descrizione</th><th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody id="propertiesBody">
+      <tr><td colspan="8" style="text-align:center; color:#999;">Caricamento…</td></tr>
+    </tbody>
+  </table>
+</div>
+<div id="messageBox"></div>
+
+<script>
+const tableBody  = document.getElementById('propertiesBody');
+const messageBox = document.getElementById('messageBox');
+const TIPO_OPTS  = ['appartamento','villa','negozio','ufficio','garage','terreno','altro'];
+const STATO_OPTS = ['disponibile','venduto','in trattativa','in affitto'];
+
+async function loadProperties() {
+  messageBox.textContent = '';
+  try {
+    const resp = await fetch('properties_api.php?action=list');
+    if (!resp.ok) throw new Error(resp.statusText);
+    renderProperties(await resp.json());
+  } catch (e) { messageBox.textContent = 'Errore: ' + e.message; }
+}
+
+function makeSelect(opts, cur, key) {
+  const sel = document.createElement('select');
+  sel.className = 'inlineSelect'; sel.dataset.field = key;
+  opts.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = o;
+    if (o === cur) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  return sel;
+}
+
+function renderProperties(items) {
+  tableBody.innerHTML = '';
+  if (!Array.isArray(items) || !items.length) {
+    tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#999;">Nessuna proprietà trovata.</td></tr>';
+    return;
+  }
+  items.forEach((item, index) => {
+    const d  = item.extracted_data || {};
+    const tr = document.createElement('tr');
+    tr.dataset.index = index;
+    const cols = [
+      { field: 'indirizzo',   text: true },
+      { field: 'città',         text: true },
+      { field: 'prezzo',      text: true },
+      { field: 'tipo',        select: TIPO_OPTS },
+      { field: 'stato',       select: STATO_OPTS },
+      { field: 'superficie',  text: true },
+      { field: 'descrizione', text: true, wide: true },
+    ];
+    cols.forEach(col => {
+      const td = document.createElement('td');
+      if (col.text) {
+        td.contentEditable = 'true'; td.spellcheck = false;
+        td.dataset.field = col.field;
+        td.textContent = d[col.field] != null ? d[col.field] : '';
+        if (col.wide) td.style.maxWidth = '200px';
+      } else {
+        td.appendChild(makeSelect(col.select, d[col.field] || col.select[0], col.field));
+      }
+      tr.appendChild(td);
+    });
+    const atd = document.createElement('td');
+    ['save','trash-alt'].forEach((icon, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'actionBtn';
+      btn.title = i === 0 ? 'Salva modifiche' : 'Elimina proprietà';
+      btn.innerHTML = `<i class="fas fa-${icon}"></i>`;
+      btn.addEventListener('click', () => i === 0 ? saveProperty(index) : deleteProperty(index));
+      atd.appendChild(btn);
+    });
+    tr.appendChild(atd);
+    tableBody.appendChild(tr);
+  });
+}
+
+function readRowData(tr, original) {
+  const upd = {};
+  tr.querySelectorAll('td[data-field]').forEach(td => { upd[td.dataset.field] = td.textContent.trim() || null; });
+  tr.querySelectorAll('select.inlineSelect').forEach(s => { upd[s.dataset.field] = s.value; });
+  return { timestamp: original.timestamp, transcription: original.transcription, extracted_data: upd };
+}
+
+async function saveProperty(index) {
+  const tr = tableBody.querySelectorAll('tr')[index];
+  if (!tr) return;
+  try {
+    const items = await (await fetch('properties_api.php?action=list')).json();
+    if (!items[index]) throw new Error('Proprietà non trovata');
+    const resp = await fetch('properties_api.php?action=edit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ index, updatedRecord: readRowData(tr, items[index]) })
+    });
+    if (!resp.ok) throw new Error(resp.status);
+    messageBox.textContent = 'Proprietà salvata.';
+    loadProperties();
+  } catch (e) { messageBox.textContent = 'Errore: ' + e.message; }
+}
+
+async function deleteProperty(index) {
+  if (!confirm('Eliminare questa proprietà?')) return;
+  try {
+    const resp = await fetch('properties_api.php?action=delete', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ index })
+    });
+    if (!resp.ok) throw new Error(resp.status);
+    messageBox.textContent = 'Proprietà eliminata.';
+    loadProperties();
+  } catch (e) { messageBox.textContent = 'Errore: ' + e.message; }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadProperties);
+loadProperties();
+</script>
+</body>
+</html>

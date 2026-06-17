@@ -24,19 +24,15 @@ if (!$openai_api_key) {
 }
 
 $prompt = <<<EOD
-Estrai in JSON i seguenti campi dal testo fornito: nome, telefono, email, città, note.
-Se un campo non è presente, metti null.
-
-NOTA — riconoscimento vocale multilingua per il campo email:
-Il motore STT trascrive i simboli in modo diverso a seconda della lingua impostata:
-  "@" può apparire come: chiocciola (it) · arroba (es/pt) · arobase (fr) · at (en/de) · et
-  "." può apparire come: punto (it/es) · point (fr) · punkt (de) · dot (en)
-Esempi di normalizzazione email:
-  "mario punto rossi chiocciola gmail punto com"  →  mario.rossi@gmail.com
-  "giulia at bianchi dot it"                       →  giulia@bianchi.it
-  "carlo arobase orange point fr"                  →  carlo@orange.fr
-  "anna et mueller punkt de"                       →  anna@mueller.de
-Restituisci sempre l'email nel formato standard: utente@dominio.tld
+Estrai in JSON i seguenti campi dal testo fornito: indirizzo, città, prezzo, tipo, stato, superficie, descrizione.
+Regole di estrazione:
+  - "prezzo":     solo il numero intero in euro (es. 280000), senza simboli, punti migliaia o testo
+  - "tipo":       uno tra [ appartamento · villa · negozio · ufficio · garage · terreno · altro ]
+  - "stato":      uno tra [ disponibile · venduto · in trattativa · in affitto ]
+  - "superficie": solo il numero intero in mq
+  - Se un campo non è presente nel testo, metti null.
+Esempio input  : "appartamento via Roma 15 Milano, disponibile, 280000 euro, 80 mq, bilocale con terrazzo"
+Esempio output : {"indirizzo":"via Roma 15","città":"Milano","prezzo":280000,"tipo":"appartamento","stato":"disponibile","superficie":80,"descrizione":"bilocale con terrazzo"}
 
 Rispondi solo con un JSON valido, senza blocchi di codice, senza markdown, senza spiegazioni.
 Testo: "{$transcription}"
@@ -79,7 +75,7 @@ $jsonStr    = preg_replace('/^```(?:json)?\s*|\s*```$/m', '', $jsonStrRaw);
 $data       = json_decode(trim($jsonStr), true);
 if ($data === null) { $data = ["raw_response" => $jsonStrRaw]; }
 
-$file = 'clients.json';
+$file = 'properties.json';
 $records = [];
 if (file_exists($file)) {
     $existing = json_decode(file_get_contents($file), true);

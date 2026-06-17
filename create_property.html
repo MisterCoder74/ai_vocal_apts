@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ImmobiVoice AI – Nuovo Cliente</title>
+<title>ImmobiVoice AI – Nuova Proprietà</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -134,8 +134,12 @@ button#saveApiKeyBtn:hover { background: #AA0000; }
         onkeypress="if(event.key==='Enter')location.href='dashboard.html'">Dashboard</span>
 </header>
 <div class="container">
-  <h1><i class="fas fa-user-plus" style="margin-right:8px"></i>Nuovo Cliente</h1>
-  <p class="hint">Pronuncia: <em>nome · telefono · email · città · nota</em> del cliente.</p>
+  <h1><i class="fas fa-home" style="margin-right:8px"></i>Nuova Proprietà</h1>
+  <p class="hint">Pronuncia i dettagli dell'immobile: <em>indirizzo · città · prezzo · tipo · stato · superficie · descrizione</em>.</p>
+  <div class="example">
+    <strong>Esempio:</strong><br>
+    <em>"Appartamento via Roma 15 Milano, disponibile, 280.000 euro, 80 metri quadri, bilocale luminoso con terrazzo."</em>
+  </div>
   <label for="apiKeyInput">OpenAI API Key</label>
   <input type="password" id="apiKeyInput" placeholder="sk-…" autocomplete="off" />
   <button id="saveApiKeyBtn">Salva API Key</button>
@@ -217,24 +221,24 @@ if (!SR) {
     }
     const normalised = VoiceUtils.normalizeAt(finalTranscript);
     transcriptDiv.textContent = normalised + (interim ? '\n' + interim : '');
-    if (e.results[e.results.length - 1].isFinal) { salvaCliente(normalised); }
+    if (e.results[e.results.length - 1].isFinal) { salvaProprietà(normalised); }
   };
 }
 
-async function salvaCliente(transcription) {
+async function salvaProprietà(transcription) {
   const apiKey = localStorage.getItem('openaikey');
   if (!apiKey) { alert('Inserisci e salva la API Key prima.'); return; }
   const fb = document.getElementById('feedbackMessage');
   fb.textContent = 'Elaborazione in corso…';
   try {
-    const resp = await fetch('extract_client.php', {
+    const resp = await fetch('extract_property.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ transcription, openai_api_key: apiKey })
     });
     if (!resp.ok) { const t = await resp.text(); throw new Error(resp.status + ' ' + t); }
     await resp.json();
-    fb.textContent = '✓ Cliente salvato con successo.';
+    fb.textContent = '✓ Proprietà salvata con successo.';
   } catch (err) {
     fb.textContent = 'Errore: ' + err.message;
   }
