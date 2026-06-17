@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Appointment Manager - New Appointment</title>
+<title>ImmobiVoice AI – Nuovo Appuntamento</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -12,15 +12,15 @@ height: 100%;
 margin: 0;
 padding: 0;
 font-family: "Segoe UI", Roboto, sans-serif;
-background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+background: #F5F5F7;
 color: #fff;
 /* Rimuovi display:flex e relative proprietà qui */
 }
 
  
 .container {
-background: rgba(255,255,255,0.05);
-border: 1px solid rgba(255,255,255,0.1);
+background: #FFFFFF;
+border: 1px solid #EEEEEE;
 border-radius: 14px;
 width: 100%;
 max-width: 480px;
@@ -33,7 +33,7 @@ gap: 16px;
          
 h1 {
 font-size: 1.6rem;
-background: linear-gradient(90deg, #10b981, #34d399);
+background: #1A1A1A;
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 background-clip: text;
@@ -50,8 +50,8 @@ justify-content: center;
 flex-wrap: wrap;
 }
 select#languageSelector {
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.12);
+background: #F5F5F7;
+border: 1px solid #DDDDDD;
 border-radius: 10px;
 color: #fff;
 padding: 8px 12px;
@@ -68,18 +68,18 @@ padding-right: 28px;
 min-width: 130px;
 }
 select#languageSelector:focus {
-border-color: rgba(16,185,129,0.5);
+border-color: rgba(204,0,0,0.5);
 }
 select#languageSelector option {
-background: #1a1a3e;
+background: #FFFFFF;
 color: #fff;
 }
 
 /* Mic button */
 button#micBtn {
-background: rgba(16,185,129,0.15);
-border: 1px solid rgba(16,185,129,0.35);
-color: #10b981;
+background: rgba(204,0,0,0.15);
+border: 1px solid rgba(204,0,0,0.35);
+color: #CC0000;
 border-radius: 9px;
 padding: 10px 16px;
 cursor: pointer;
@@ -91,12 +91,12 @@ transition: all 0.18s;
 flex-shrink: 0;
 }
 button#micBtn:hover {
-background: rgba(16,185,129,0.28);
-box-shadow: 0 0 14px rgba(16,185,129,0.3);
+background: rgba(204,0,0,0.28);
+box-shadow: 0 0 14px rgba(204,0,0,0.3);
 }
 button#micBtn.recording {
-background: rgba(16,185,129,0.5);
-box-shadow: 0 0 18px rgba(16,185,129,0.7);
+background: rgba(204,0,0,0.5);
+box-shadow: 0 0 18px rgba(204,0,0,0.7);
 }
 button#micBtn i {
 pointer-events: none;
@@ -104,8 +104,8 @@ pointer-events: none;
 
 /* Transcript container */
 #transcript {
-background: rgba(255,255,255,0.04);
-border: 1px solid rgba(16,185,129,0.12);
+background: #FFFFFF;
+border: 1px solid rgba(204,0,0,0.12);
 border-radius: 14px;
 padding: 16px 20px;
 min-height: 120px;
@@ -127,9 +127,9 @@ transition: color 0.3s ease;
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: linear-gradient(90deg, #10b981, #10b981); /* Verde scuro più intenso */
+background: #1A1A1A; /* Verde scuro più intenso */
 padding: 16px 28px;
-box-shadow: 0 4px 10px rgba(0, 100, 30, 0.6); /* Ombra più scura */
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Ombra più scura */
 user-select: none;
 }
 .app-name {
@@ -144,7 +144,7 @@ text-shadow: 0 0 1px rgba(66,43,83,0.8);
 .dashboard-link {
 font-weight: 700;
 font-size: 1.2rem;
-color: #bbdcb8; /* Verde chiaro */
+color: #FFAAAA; /* Verde chiaro */
 cursor: pointer;
 user-select: text;
 margin: 0;
@@ -154,10 +154,10 @@ text-shadow: 0 0 4px rgba(187,220,184,0.6);
 }
 .dashboard-link:hover,
 .dashboard-link:focus {
-color: #e0ffe0;
+color: #FFE5E5;
 outline: none;
-border-color: #a0e48a;
-text-shadow: 0 0 8px #d2ffb1;
+border-color: #FF9999;
+text-shadow: 0 0 8px #FFD0D0;
 }       
 /* Responsive */
 @media (max-width: 600px) {
@@ -169,28 +169,160 @@ min-height: 90px;
 font-size: 1rem;
 }
 }
+
+/* ═══════════════════════════════════════
+   ImmobiVoice AI — Design System
+   Palette: #CC0000 · #1A1A1A · #FFFFFF
+   ═══════════════════════════════════════ */
+
+/* Reset dark-theme body */
+body, html {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+}
+
+/* Topbar */
+.topbar {
+  background: #1A1A1A !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.30) !important;
+}
+.app-name {
+  color: #CC0000 !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #CC0000 !important;
+  background: none !important;
+}
+.dashboard-link { color: #FFFFFF !important; border-color: transparent !important; text-shadow: none !important; }
+.dashboard-link:hover, .dashboard-link:focus { color: #FF9999 !important; border-color: #FF9999 !important; }
+
+/* Page headings */
+h1 {
+  color: #CC0000 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #CC0000 !important;
+}
+h2 {
+  color: #1A1A1A !important;
+  background: none !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+}
+
+/* Cards (dashboard navigation) */
+.card {
+  background: #FFFFFF !important;
+  color: #CC0000 !important;
+  border: 2px solid #CC0000 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10) !important;
+}
+.card:hover {
+  background: #FFF5F5 !important;
+  box-shadow: 0 8px 28px rgba(204,0,0,0.18) !important;
+}
+.card i { color: #CC0000 !important; }
+
+/* Containers / panels */
+.mini-table-container, .container {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+  border: none !important;
+  color: #1A1A1A !important;
+}
+
+/* Tables */
+table {
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+}
+thead tr { background: #CC0000 !important; }
+thead th { color: #FFFFFF !important; }
+th, td { color: #1A1A1A !important; }
+tbody tr:nth-child(even) { background: rgba(204,0,0,0.04) !important; }
+tbody tr:hover { background: rgba(204,0,0,0.07) !important; }
+tbody td[contenteditable="true"] { background: rgba(204,0,0,0.05) !important; }
+
+/* Buttons */
+.actionBtn {
+  background: transparent !important;
+  border: 1.5px solid #CC0000 !important;
+  color: #CC0000 !important;
+}
+.actionBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+#refreshBtn {
+  background: transparent !important;
+  border-color: #CC0000 !important;
+  color: #CC0000 !important;
+}
+#refreshBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+button#saveApiKeyBtn { background: #CC0000 !important; color: #FFFFFF !important; border: none !important; }
+
+/* Mic button */
+button#micBtn {
+  background: rgba(204,0,0,0.08) !important;
+  border: 1px solid rgba(204,0,0,0.35) !important;
+  color: #CC0000 !important;
+}
+button#micBtn:hover { background: rgba(204,0,0,0.18) !important; }
+button#micBtn.recording {
+  background: rgba(204,0,0,0.35) !important;
+  box-shadow: 0 0 18px rgba(204,0,0,0.45) !important;
+}
+
+/* Transcript area */
+#transcript {
+  background: #F9F9F9 !important;
+  border-color: rgba(204,0,0,0.25) !important;
+  color: #1A1A1A !important;
+}
+
+/* Inputs */
+select#languageSelector {
+  background-color: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23CC0000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+}
+select#languageSelector option { background: #FFFFFF !important; color: #1A1A1A !important; }
+input[type="password"], input[type="text"] {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+/* Feedback / messages */
+#messageBox { color: #CC0000 !important; }
+#feedbackMessage { color: #CC0000 !important; }
+
+/* Calendar specific */
+.fc-toolbar-title { color: #1A1A1A !important; }
+.fc-button-primary { background: #CC0000 !important; border-color: #AA0000 !important; }
+.fc-button-primary:hover { background: #AA0000 !important; }
+.event-dot, .fc-event { background: #CC0000 !important; border-color: #AA0000 !important; }
+
+/* Subtitle/caption text */
+p.subtitle { color: #666666 !important; }
 </style>
 </head>
 <body>
 <header class="topbar">
-<h1 class="app-name" tabindex="0">VocaPoint</h1>
+<h1 class="app-name" tabindex="0">ImmobiVoice AI</h1>
 <h3 class="dashboard-link" tabindex="0" role="link" onclick="location.href='dashboard.html'" onkeypress="if(event.key==='Enter') location.href='dashboard.html'">Dashboard</h3>
 </header>        
 
 <div class="container">
 <h1>Crea un nuovo Appuntamento</h1>
-<label for="apiKeyInput" style="display:block; margin-bottom:8px; font-weight:700; color:#10b981;">
+<label for="apiKeyInput" style="display:block; margin-bottom:8px; font-weight:700; color:#CC0000;">
 Inserisci OpenAI API Key:
 </label>
 <input
 type="password"
 id="apiKeyInput"
 placeholder="sk-... (OpenAI API key)"
-style="width:100%; padding:8px 10px; border-radius:8px; border:none; background:rgba(255,255,255,0.1); color:#eee; font-family: monospace;"
+style="width:100%; padding:8px 10px; border-radius:8px; border:none; background:#EEEEEE; color:#eee; font-family: monospace;"
 autocomplete="off"
 />
 
-<button id="saveApiKeyBtn" style="margin-top:8px; background:#10b981; border:none; color:#000; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer;">
+<button id="saveApiKeyBtn" style="margin-top:8px; background:#CC0000; border:none; color:#000; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer;">
 Salva API Key
 </button>        
 <div class="controls-row">
@@ -336,7 +468,7 @@ const feedbackEl = document.getElementById('feedbackMessage');
 
 try {
 feedbackEl.textContent = "Sto creando l'appuntamento...";
-feedbackEl.style.color = "#10b981"; // verde
+feedbackEl.style.color = "#CC0000"; // verde
 
 const response = await fetch(apiUrl, {
 method: "POST",
@@ -353,7 +485,7 @@ console.log("Dati estratti:", data.extracted_data);
 
 // Mostra messaggio positivo
 feedbackEl.textContent = "Appuntamento creato con successo.";
-feedbackEl.style.color = "#10b981";
+feedbackEl.style.color = "#CC0000";
 
 return data;
 } catch (error) {
@@ -361,7 +493,7 @@ console.error("Errore in invioBackend:", error);
 
 // Messaggio errore
 feedbackEl.textContent = "Impossibile creare appuntamento.";
-feedbackEl.style.color = "#ff5353"; // rosso
+feedbackEl.style.color = "#CC0000"; // rosso
 
 alert("Si è verificato un errore durante l'estrazione dati.");
 }

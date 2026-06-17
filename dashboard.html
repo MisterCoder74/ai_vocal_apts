@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Dashboard Appuntamenti — VivacityGPT</title>
+<title>ImmobiVoice AI – Dashboard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 body, html {
 height: 100%;
 font-family: "Segoe UI", Roboto, sans-serif;
-background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+background: #F5F5F7;
 color: #fff;
 display: flex;
 flex-direction: column;
@@ -21,7 +21,7 @@ h1 {
 font-size: 1.8rem;
 font-weight: 800;
 margin-bottom: 6px;
-background: linear-gradient(90deg, #10b981, #34d399);
+background: #1A1A1A;
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
@@ -40,7 +40,7 @@ justify-content: center;
 margin-bottom: 36px;
 }
 .card {
-background: rgba(16,185,129,0.15);
+background: rgba(204,0,0,0.15);
 border-radius: 14px;
 width: 220px;
 height: 140px;
@@ -49,10 +49,10 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 cursor: pointer;
-color: #10b981;
+color: #CC0000;
 font-weight: 700;
 font-size: 1.1rem;
-box-shadow: 0 0 12px rgba(16,185,129,0.3);
+box-shadow: 0 0 12px rgba(204,0,0,0.3);
 transition: background 0.25s, box-shadow 0.3s;
 user-select: none;
 }
@@ -61,14 +61,14 @@ font-size: 2.8rem;
 margin-bottom: 12px;
 }
 .card:hover {
-background: rgba(16,185,129,0.35);
-box-shadow: 0 0 28px rgba(16,185,129,0.7);
-color: #d0f9e7;
+background: rgba(204,0,0,0.35);
+box-shadow: 0 0 28px rgba(204,0,0,0.7);
+color: #FFE5E5;
 }
 .mini-table-container {
 width: 100%;
 max-width: 720px;
-background: rgba(255,255,255,0.03);
+background: #FFFFFF;
 border-radius: 12px;
 padding: 18px 24px;
 }
@@ -78,7 +78,7 @@ border-collapse: collapse;
 color: rgba(255,255,255,0.9);
 }
 thead tr {
-border-bottom: 2px solid #10b981;
+border-bottom: 2px solid #CC0000;
 }
 th, td {
 padding: 10px 14px;
@@ -86,15 +86,15 @@ font-size: 0.9rem;
 text-align: left;
 }
 tbody tr:hover {
-background: rgba(16,185,129,0.15);
+background: rgba(204,0,0,0.15);
 }
 tbody tr:nth-child(even) {
 background: rgba(255, 255, 255, 0.05);
 }
 #refreshBtn {
 background: transparent;
-border: 1.5px solid #10b981;
-color: #10b981;
+border: 1.5px solid #CC0000;
+color: #CC0000;
 padding: 6px 12px;
 margin-top: 12px;
 border-radius: 12px;
@@ -105,14 +105,14 @@ float: right;
 transition: background 0.22s, color 0.22s;
 }
 #refreshBtn:hover {
-background: #10b981;
+background: #CC0000;
 color: #000;
 }
 #messageBox {
 margin-top: 8px;
 text-align: center;
 font-weight: 700;
-color: #00f2a0;
+color: #CC0000;
 font-size: 0.95rem;
 min-height: 22px;
 user-select: none;
@@ -132,6 +132,138 @@ max-width: 100vw;
 padding: 12px 14px;
 }
 }
+
+/* ═══════════════════════════════════════
+   ImmobiVoice AI — Design System
+   Palette: #CC0000 · #1A1A1A · #FFFFFF
+   ═══════════════════════════════════════ */
+
+/* Reset dark-theme body */
+body, html {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+}
+
+/* Topbar */
+.topbar {
+  background: #1A1A1A !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.30) !important;
+}
+.app-name {
+  color: #CC0000 !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #CC0000 !important;
+  background: none !important;
+}
+.dashboard-link { color: #FFFFFF !important; border-color: transparent !important; text-shadow: none !important; }
+.dashboard-link:hover, .dashboard-link:focus { color: #FF9999 !important; border-color: #FF9999 !important; }
+
+/* Page headings */
+h1 {
+  color: #CC0000 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #CC0000 !important;
+}
+h2 {
+  color: #1A1A1A !important;
+  background: none !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+}
+
+/* Cards (dashboard navigation) */
+.card {
+  background: #FFFFFF !important;
+  color: #CC0000 !important;
+  border: 2px solid #CC0000 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10) !important;
+}
+.card:hover {
+  background: #FFF5F5 !important;
+  box-shadow: 0 8px 28px rgba(204,0,0,0.18) !important;
+}
+.card i { color: #CC0000 !important; }
+
+/* Containers / panels */
+.mini-table-container, .container {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+  border: none !important;
+  color: #1A1A1A !important;
+}
+
+/* Tables */
+table {
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+}
+thead tr { background: #CC0000 !important; }
+thead th { color: #FFFFFF !important; }
+th, td { color: #1A1A1A !important; }
+tbody tr:nth-child(even) { background: rgba(204,0,0,0.04) !important; }
+tbody tr:hover { background: rgba(204,0,0,0.07) !important; }
+tbody td[contenteditable="true"] { background: rgba(204,0,0,0.05) !important; }
+
+/* Buttons */
+.actionBtn {
+  background: transparent !important;
+  border: 1.5px solid #CC0000 !important;
+  color: #CC0000 !important;
+}
+.actionBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+#refreshBtn {
+  background: transparent !important;
+  border-color: #CC0000 !important;
+  color: #CC0000 !important;
+}
+#refreshBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+button#saveApiKeyBtn { background: #CC0000 !important; color: #FFFFFF !important; border: none !important; }
+
+/* Mic button */
+button#micBtn {
+  background: rgba(204,0,0,0.08) !important;
+  border: 1px solid rgba(204,0,0,0.35) !important;
+  color: #CC0000 !important;
+}
+button#micBtn:hover { background: rgba(204,0,0,0.18) !important; }
+button#micBtn.recording {
+  background: rgba(204,0,0,0.35) !important;
+  box-shadow: 0 0 18px rgba(204,0,0,0.45) !important;
+}
+
+/* Transcript area */
+#transcript {
+  background: #F9F9F9 !important;
+  border-color: rgba(204,0,0,0.25) !important;
+  color: #1A1A1A !important;
+}
+
+/* Inputs */
+select#languageSelector {
+  background-color: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23CC0000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+}
+select#languageSelector option { background: #FFFFFF !important; color: #1A1A1A !important; }
+input[type="password"], input[type="text"] {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+/* Feedback / messages */
+#messageBox { color: #CC0000 !important; }
+#feedbackMessage { color: #CC0000 !important; }
+
+/* Calendar specific */
+.fc-toolbar-title { color: #1A1A1A !important; }
+.fc-button-primary { background: #CC0000 !important; border-color: #AA0000 !important; }
+.fc-button-primary:hover { background: #AA0000 !important; }
+.event-dot, .fc-event { background: #CC0000 !important; border-color: #AA0000 !important; }
+
+/* Subtitle/caption text */
+p.subtitle { color: #666666 !important; }
 </style>
 </head>
 <body>
@@ -155,7 +287,7 @@ Vista Calendario
 </div>
 
 <div class="mini-table-container" aria-label="Prossimi 5 appuntamenti">
-<h2 style="font-weight:700; margin-bottom: 12px; color:#10b981; font-size:1.2rem;">Prossimi appuntamenti</h2>
+<h2 style="font-weight:700; margin-bottom: 12px; color:#CC0000; font-size:1.2rem;">Prossimi appuntamenti</h2>
 <table aria-live="polite" aria-relevant="additions removals">
 <thead>
 <tr>
@@ -242,7 +374,7 @@ tr.innerHTML = `
 nextAppBody.appendChild(tr);
 });
 } catch (e) {
-nextAppBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ff5d5d;">Errore caricamento dati</td></tr>';
+nextAppBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#CC0000;">Errore caricamento dati</td></tr>';
 messageBox.textContent = `Errore: ${e.message}`;
 }
 }

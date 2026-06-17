@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Appointment Manager - Manage Appointments</title>
+<title>ImmobiVoice AI – Gestisci Appuntamenti</title>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css' />
 <style>
 /* Riporto lo stile dal layout precedente (semplificato e adattato) */
@@ -12,7 +12,7 @@
 html, body {
 height: 100%;
 font-family: "Segoe UI", Roboto, sans-serif;
-background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+background: #F5F5F7;
 color: #fff;
 margin: 0;
 padding: 0;
@@ -20,7 +20,7 @@ padding: 0;
 h1 {
 font-weight: 800;
 font-size: 1.6rem;
-background: linear-gradient(90deg, #10b981, #34d399);
+background: #1A1A1A;
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 background-clip: text;
@@ -30,13 +30,13 @@ text-align: center;
 table {
 border-collapse: collapse;
 width: 80%;
-background: rgba(255,255,255,0.03);
+background: #FFFFFF;
 border-radius: 12px;
 overflow: hidden;
 margin: 1rem auto;        
 }
 thead tr {
-background: rgba(16, 185, 129, 0.35);
+background: rgba(204, 0, 0, 0.35);
 }
 thead th {
 padding: 12px 10px;
@@ -57,30 +57,30 @@ font-size: 0.88rem;
 vertical-align: middle;
 }
 tbody td[contenteditable="true"] {
-background: rgba(16,185,129,0.08);
+background: rgba(204,0,0,0.08);
 cursor: text;
 border-radius: 6px;
 transition: background 0.3s;
 }
 tbody td[contenteditable="true"]:focus {
-background: rgba(16,185,129,0.23);
+background: rgba(204,0,0,0.23);
 outline: none;
 }
 button.actionBtn {
 background: transparent;
 border: none;
-color: #10b981;
+color: #CC0000;
 cursor: pointer;
 font-size: 1.1rem;
 transition: color 0.2s;
 }
 button.actionBtn:hover {
-color: #34d399;
+color: #CC0000;
 }
 #messageBox {
 margin-top: 15px;
 font-size: 0.9rem;
-color: #00f2a0;
+color: #CC0000;
 min-height: 22px;
 text-align: center;
 }
@@ -88,9 +88,9 @@ text-align: center;
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: linear-gradient(90deg, #10b981, #10b981); /* Verde scuro più intenso */
+background: #1A1A1A; /* Verde scuro più intenso */
 padding: 16px 28px;
-box-shadow: 0 4px 10px rgba(0, 100, 30, 0.6); /* Ombra più scura */
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Ombra più scura */
 user-select: none;
 }
 .app-name {
@@ -105,7 +105,7 @@ text-shadow: 0 0 1px rgba(66,43,83,0.8);
 .dashboard-link {
 font-weight: 700;
 font-size: 1.2rem;
-color: #bbdcb8; /* Verde chiaro */
+color: #FFAAAA; /* Verde chiaro */
 cursor: pointer;
 user-select: text;
 margin: 0;
@@ -115,17 +115,149 @@ text-shadow: 0 0 4px rgba(187,220,184,0.6);
 }
 .dashboard-link:hover,
 .dashboard-link:focus {
-color: #e0ffe0;
+color: #FFE5E5;
 outline: none;
-border-color: #a0e48a;
-text-shadow: 0 0 8px #d2ffb1;
+border-color: #FF9999;
+text-shadow: 0 0 8px #FFD0D0;
 }       
         
+
+/* ═══════════════════════════════════════
+   ImmobiVoice AI — Design System
+   Palette: #CC0000 · #1A1A1A · #FFFFFF
+   ═══════════════════════════════════════ */
+
+/* Reset dark-theme body */
+body, html {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+}
+
+/* Topbar */
+.topbar {
+  background: #1A1A1A !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.30) !important;
+}
+.app-name {
+  color: #CC0000 !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #CC0000 !important;
+  background: none !important;
+}
+.dashboard-link { color: #FFFFFF !important; border-color: transparent !important; text-shadow: none !important; }
+.dashboard-link:hover, .dashboard-link:focus { color: #FF9999 !important; border-color: #FF9999 !important; }
+
+/* Page headings */
+h1 {
+  color: #CC0000 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #CC0000 !important;
+}
+h2 {
+  color: #1A1A1A !important;
+  background: none !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+}
+
+/* Cards (dashboard navigation) */
+.card {
+  background: #FFFFFF !important;
+  color: #CC0000 !important;
+  border: 2px solid #CC0000 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10) !important;
+}
+.card:hover {
+  background: #FFF5F5 !important;
+  box-shadow: 0 8px 28px rgba(204,0,0,0.18) !important;
+}
+.card i { color: #CC0000 !important; }
+
+/* Containers / panels */
+.mini-table-container, .container {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+  border: none !important;
+  color: #1A1A1A !important;
+}
+
+/* Tables */
+table {
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+}
+thead tr { background: #CC0000 !important; }
+thead th { color: #FFFFFF !important; }
+th, td { color: #1A1A1A !important; }
+tbody tr:nth-child(even) { background: rgba(204,0,0,0.04) !important; }
+tbody tr:hover { background: rgba(204,0,0,0.07) !important; }
+tbody td[contenteditable="true"] { background: rgba(204,0,0,0.05) !important; }
+
+/* Buttons */
+.actionBtn {
+  background: transparent !important;
+  border: 1.5px solid #CC0000 !important;
+  color: #CC0000 !important;
+}
+.actionBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+#refreshBtn {
+  background: transparent !important;
+  border-color: #CC0000 !important;
+  color: #CC0000 !important;
+}
+#refreshBtn:hover { background: #CC0000 !important; color: #FFFFFF !important; }
+button#saveApiKeyBtn { background: #CC0000 !important; color: #FFFFFF !important; border: none !important; }
+
+/* Mic button */
+button#micBtn {
+  background: rgba(204,0,0,0.08) !important;
+  border: 1px solid rgba(204,0,0,0.35) !important;
+  color: #CC0000 !important;
+}
+button#micBtn:hover { background: rgba(204,0,0,0.18) !important; }
+button#micBtn.recording {
+  background: rgba(204,0,0,0.35) !important;
+  box-shadow: 0 0 18px rgba(204,0,0,0.45) !important;
+}
+
+/* Transcript area */
+#transcript {
+  background: #F9F9F9 !important;
+  border-color: rgba(204,0,0,0.25) !important;
+  color: #1A1A1A !important;
+}
+
+/* Inputs */
+select#languageSelector {
+  background-color: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23CC0000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+}
+select#languageSelector option { background: #FFFFFF !important; color: #1A1A1A !important; }
+input[type="password"], input[type="text"] {
+  background: #F5F5F7 !important;
+  color: #1A1A1A !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+/* Feedback / messages */
+#messageBox { color: #CC0000 !important; }
+#feedbackMessage { color: #CC0000 !important; }
+
+/* Calendar specific */
+.fc-toolbar-title { color: #1A1A1A !important; }
+.fc-button-primary { background: #CC0000 !important; border-color: #AA0000 !important; }
+.fc-button-primary:hover { background: #AA0000 !important; }
+.event-dot, .fc-event { background: #CC0000 !important; border-color: #AA0000 !important; }
+
+/* Subtitle/caption text */
+p.subtitle { color: #666666 !important; }
 </style>
 </head>
 <body>
 <header class="topbar">
-<h1 class="app-name" tabindex="0">VocaPoint</h1>
+<h1 class="app-name" tabindex="0">ImmobiVoice AI</h1>
 <h3 class="dashboard-link" tabindex="0" role="link" onclick="location.href='dashboard.html'" onkeypress="if(event.key==='Enter') location.href='dashboard.html'">Dashboard</h3>
 </header>        
 <h1>Gestione Appuntamenti</h1>
