@@ -157,7 +157,7 @@ const fields = ["cliente", "telefono", "città", "indirizzo", "data", "orario"];
 // Carica appuntamenti dal server
 async function loadAppointments() {
 try {
-const resp = await fetch('list_appointments.php');
+const resp = await fetch('appointment_api.php?action=list');
 if (!resp.ok) throw new Error(`Errore caricamento: ${resp.statusText}`);
 const appointments = await resp.json();
 renderAppointments(appointments);
@@ -239,7 +239,7 @@ if (!tr) return;
 
 try {
 // Prima carichiamo il record originale per mantenere timestamp/transcription
-const respList = await fetch('list_appointments.php');
+const respList = await fetch('appointment_api.php?action=list');
 if (!respList.ok) throw new Error(`Errore caricamento: ${respList.statusText}`);
 const appointmentsList = await respList.json();
 
@@ -248,7 +248,7 @@ if (!appointmentsList[index]) throw new Error('Appuntamento non trovato');
 const updatedRecord = readAppointmentFromRow(tr, appointmentsList[index]);
 
 // Invia aggiornamento
-const resp = await fetch('edit_appointment.php', {
+const resp = await fetch('appointment_api.php?action=edit', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({ index, updatedRecord })
@@ -272,7 +272,7 @@ async function deleteAppointment(index) {
 if (!confirm('Sei sicuro di voler cancellare questo appuntamento?')) return;
 
 try {
-const resp = await fetch('delete_appointment.php', {
+const resp = await fetch('appointment_api.php?action=delete', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({ index })
